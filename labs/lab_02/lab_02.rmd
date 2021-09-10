@@ -48,27 +48,50 @@ west_virginia_ppp <- read_rds("lab_02.rds")
 
 **Q1** Create a new column that divides the loan amounts into multiple options: under_10k, 10k_50k, 50k_100k, 100k_500k, 500k_1m, 1m_plus. How many loans are in each group? You will need to use `case_when` to make this work and there's an example of this in the book chapter on mutate.
 **A1** [write your answer here]
-
+I first noticed there were no loans under 10000 or over 1000000. There were 2 loans that ranged from 10000 to 50000. There were 6 loans that ranged from 50000 to 100000. Lastly, there were 2 loans that ranged from 100000 to 500000. 
 ```{r}
 # Write the code to produce your answer here
-
+west_virginia_ppp %>%
+  mutate(
+    in_out= case_when(
+      amount < 10000 ~ "under_10k",
+      amount >= 10000 & amount< 50000 ~ '10k_50k',
+      amount >= 50000 & amount< 100000 ~ '50k_100k',
+      amount >= 100000 & amount< 500000 ~ '100k_500000',
+      amount >= 500000 & amount< 1000000 ~ '500k_1m' ,
+      amount > 1000000 ~ "1m_plus"
+    )
+  )
 ```
 
 **Q2** Which servicing lenders have the most loans with undisbursed amounts greater than 0?
 **A2** [write your answer here]
-
+In looking at the data under the undisbursed amount column, all of the servicing lenders have at least an undisbursed amount greater than 1. The lenders with the most undisbursed amounts include United Bank, WesBanco Bank Inc., Premier Bank Inc., and City National Bank of West Virginia.  
 ```{r}
 # Write the code to produce your answer here
-
+west_virginia_ppp %>% 
+ group_by(lender) %>%
+  summarize(
+    undisbursed_amount=n()
+  )%>%
+  arrange(desc(undisbursed_amount))
+  
 ```
 
 **Q3** How would you describe the top 10 list of those lenders? What do they have in common or not? (You may want to look up some of the top ones.)
 **A3** [write your answer here]
+The top 10 list of these lenders all have locations in the West Virginia, Virginia, and D.C. metro area. When looking up the top banks I noticed they all had multiple locations, these were not small banks with only one or two locations. Each one I looked at also had mobile banking options as well, which is something I believe they all have in common. 
 
 **Q4** Which month in 2021 had the most loans approved?
 **A4** [write your answer here]
+March was the month in 2021 that had the most total loans approved. March had a total of 4,404 loans approved. 
 
 ```{r}
 # Write the code to produce your answer here
-
+west_virginia_ppp %>% 
+  mutate(Month = floor_date(date_approved, "month")) %>%
+  group_by(Month) %>%
+  summarise(total = n()) %>%
+  arrange(desc(total))
+  
 ```
