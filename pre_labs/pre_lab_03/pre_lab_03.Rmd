@@ -231,7 +231,7 @@ And let's examine the full data set.
 ### Task 5: Examine the data table
 **Task** Run the following codeblock to examine the data. Name three problems the book chapter says exist in this data set that could prevent us from answering questions?  Answer below
 **Answer**
-One problem is there is a fully duplicated row (the first and second). Another problem is that the street address field is inconsistent. One last problem is that the column headers are inconsistently styled. 
+One problem is that there is a fully duplicated row (the first and second rows). Another problem is that the street address field is inconsistent. One last problem is that the column headers are inconsistently styled. 
 ```{r}
 arnold_md_loans
 ```
