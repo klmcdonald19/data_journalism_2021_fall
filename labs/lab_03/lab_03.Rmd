@@ -31,10 +31,10 @@ wv_ppp_loans <- read_rds("lab_03.rds")
 ## Answer questions
 
 Q1: Which five cities located in Kanawha County, West Virginia got the most loans (in number of loans)? How many did each get? To answer this question, you'll have to clean the very messy "city" field.
-Charleston had 2836	loans. South Charleston	had 484	loans. Saint Albans	had 304	loans. Dunbar	has 166	loans. Nitro had 142 loans. 
+
 Note: To answer this question, please fully clean the city field for Kanawha County cities. Hint: once cleaned, the dataframe that counts the number of loans by city should have 38 distinct cities for Kanawha County.
 
-A1:
+A1:Charleston had 2836	loans. South Charleston	had 484	loans. Saint Albans	had 304	loans. Dunbar	has 166	loans. Nitro had 142 loans. 
 ```{r}
 
 # Write your code in this codeblock.
@@ -109,11 +109,14 @@ Some hints to help you answer this question:
 * This is a link to details on passage of the [CARES ACT](https://www.congress.gov/bill/116th-congress/house-bill/748). You can find a link to how the House voted by clicking on a link from [this page](https://www.congress.gov/bill/116th-congress/house-bill/748/actions).
 
 A3:
-
+DM Motor INC, Dutch Miller of Charleston Inc, Dutch Miller of Charlotte Inc, Dutch Miller Subaru Inc, Dutch Miller Chevrolet Inc are the 5 entities owned by the Millers. The 5 of them are all car dealerships. Originally Carol Miller did not support the legislation for the laon program. The total amount all the businesses received is 3105300. The amount that has been forgiven is 3140471, and the percentage is 1.011326.	
 ```{r}
 
 # Hint
 # First, create a dataframe that only has loans to those five companies
+wv_ppp_loans %>%
+  filter(name == "DM MOTOR, INC" | name == "DUTCH MILLER OF CHARLESTON, INC" | name == "DUTCH MILLER OF CHARLOTTE, INC" | name == "DUTCH MILLER SUBARU, INC" | name == "DUTCH MILLER CHEVROLET, INC.")
 # Second, use that newly created dataframe to calculate total loan amount and percentage forgiven for those companies
-
+wv_ppp_loans %>%
+  filter(name == "DM MOTOR, INC" | name == "DUTCH MILLER OF CHARLESTON, INC" | name == "DUTCH MILLER OF CHARLOTTE, INC" | name == "DUTCH MILLER SUBARU, INC" | name == "DUTCH MILLER CHEVROLET, INC.")%>% select(name, amount, forgiveness_amount) %>% summarise(total_amount = sum(amount), total_forgiveness=sum(forgiveness_amount)) %>% mutate(percentage=total_forgiveness/total_amount) 
 ```
