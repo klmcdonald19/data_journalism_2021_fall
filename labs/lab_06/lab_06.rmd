@@ -54,6 +54,8 @@ Let's load it into R, and in doing so we'll skip the first two rows and add our 
 
 ```{r}
 # Write the code to load the CSV file here
+international_migration <- read_csv("data/tabula-md-statistical-handbook.csv", skip=2, col_names = c("county", "July_2010", "July_2011","July_2012", "July_2013", "July_2014","July_2015","July_2016","July_2017","July_2018", "total"))
+View(international_migration)
 ```
 
 Add a column for the type of migration ("international") and populate it:
@@ -62,32 +64,45 @@ Add a column for the type of migration ("international") and populate it:
 
 ```{r}
 # Write the code to add the column here
+international_migration <- international_migration %>%
+  mutate(
+    migration_type= "international"
+  )
+
 ```
 
 ## Answer questions
 
 **Q1** Which region and county/city _below_ the state level accounted for the largest percentage of international migration for the entire time period? You'll need to add and populate a column representing percent of total using `mutate`.
 **A1** [write your answer here]
-
+The largest percentage of international migration is the Suburban Washington Region. 
 ```{r}
 # Write the code to produce your answer here
-
+international_migration %>%
+  mutate(
+    percent_of_total= total/198996
+) %>%
+arrange(desc(percent_of_total))
 ```
 
 **Q2** Write a sentence or two that describes the data you produced in A1. Try to convey the most important idea.
 **A2** [write your answer here]
-
+I mutated the data to find the percent of the total, which is the total divided by 198996. Then we had to arrange by the highest percentage to the lowest percentage. It is the Suburban Washington Region.  
 **Q3** Which region & jurisdiction had the largest percentage change (either negative or positive) for international migration between July 2018 and July 2017? The formula for percentage change is easy to remember: (New-Old)/Old.
 **A3** [write your answer here]
-
+The largest percentage change was by Cecil County. It had a percentage change of -1.279. 
 ```{r}
 # Write the code to produce your answer here
-
+international_migration %>%
+  mutate(
+    percent_change= (July_2018 - July_2017) / July_2017
+) %>%
+arrange(desc(percent_change))
 ```
 
 **Q4** What's your best guess as to why these changes occurred, and in those places in particular?
 **A4** [write your answer here]
-
+There could have been lower levels of immigration due to the fact that Trump was in office. He created laws that made it harder for immigration into the country while he was president, so this could be a reason there were a lot of changes. 
 
 ## Back to Tabula
 
@@ -103,6 +118,7 @@ Let's load it into R, and in doing so we'll skip the first two rows and add our 
 
 ```{r}
 # Write the code to load the CSV file here
+domestic_migration <- read_csv("data/tabula-md-statistical-handbook-domestic.csv", skip=2, col_names = c("county", "July_2010", "July_2011","July_2012", "July_2013", "July_2014","July_2015","July_2016","July_2017","July_2018", "total")) 
 ```
 
 Add a column for the type of migration ("domestic") and populate it:
@@ -111,24 +127,35 @@ Add a column for the type of migration ("domestic") and populate it:
 
 ```{r}
 # Write the code to add the column here
+domestic_migration <- domestic_migration %>%
+  mutate(
+    migration_type= "domestic"
+  )
 ```
 
 ## Answer questions
 **Q5** Which Maryland individual jurisdiction saw the largest net decrease in domestic migration overall?
 **A5** [write your answer here]
-
+Baltimore City has the largest net decrease.
 ```{r}
 # Write the code to produce your answer here
-
+domestic_migration <- domestic_migration %>% 
+arrange(total)
 ```
 
 **Q6** How many regions & jurisdictions had net positive migration for July 2017, July 2018 and July 2019 (not just individually but all three together)?
 **A6** [write your answer here]
+18 regions had a net positive migration during this time. 
 
 ```{r}
 # Write the code to produce your answer here
-
+domestic_migration <- domestic_migration %>% 
+mutate(
+    net_positive = (July_2016+July_2017+July_2018)
+  ) %>%
+arrange(desc(net_positive))
 ```
 
 **Q7** How would you describe this data? Is there a county or region that stands out, and why?
 **A7** [write your answer here]
+This data is pretty split in terms of positive and negative migration. Frederick County has the highest positive migration. Something that stood out to me is the total for Maryland was negative. Most of the positive migrations are on the Eastern Shore which have relatively low populations. 
