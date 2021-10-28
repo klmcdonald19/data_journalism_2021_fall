@@ -16,7 +16,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load libraries and establish settings
 
 **Task** Create a codeblock and load appropriate packages and settings for this lab.
+```{r}
+library(tidyverse)
+ install.packages("tidycensus")
+library(tidycensus)
+```
 
+```{r echo=FALSE}
+#census_api_key("cf1cf256ae2dbf70e349a8ed26a87792c4ad7275", install=TRUE)
+```
 ## Questions
 
 **Q1.** Which day in April 2020 saw the most loans approved in West Virginia? 
@@ -30,11 +38,39 @@ You MUST do the following things when answering this question:
   * adds a small circle (called a "point") on the line for dates that had loans. And to the left of each circle/point, shows the number of loans on that date.  I didn't show you how to do this in the prelab, so do some web sleuthing to figure it out! 
 
 Basically, your chart should look like this image, which will appear when you run the codeblock below. 
-
 ```{r}
 knitr::include_graphics(rep("images/chart_1.png"))
 ```
+
+```{r}
+wv_ppp_loan <- read_rds("data/lab_09.rds") 
+
+
+april_ppp <- wv_ppp_loan %>%
+    filter(date_approved>="2020-04-01", date_approved<="2020-04-30") %>%
+  group_by(date_approved) %>%
+  summarise(total_loans=n()
+  )
+  
+ april_ppp %>%
+ggplot() + 
+   geom_line(aes(x=date_approved, y=total_loans)) + 
+scale_x_date(date_breaks = "1 day", date_labels = "%m-%d-%Y") +
+theme(
+axis.text.x = element_text(angle = 45,hjust=1)
+) +
+ labs(
+    title="Days in April with Most PPP Loans Approved in West Virginia",
+    x = "date approved",
+    y = "total loans",
+    caption = "source: SBA PPP loan database"
+ )+
+  geom_point(aes(x = date_approved, y = total_loans)) +
+   geom_text(aes(x = date_approved, y = total_loans,label=total_loans), nudge_x = -1, nudge_y= 0, check_overlap=T) 
+ 
+```
 **A1.** 
+April 28th had the most loans with 2,381 loans.
 
 **Q2.** What are the top 10 states that got the most PPP loans per 100,000 people? You MUST do the following things when answering this question:
 
@@ -43,7 +79,45 @@ knitr::include_graphics(rep("images/chart_1.png"))
 * Use the tidycensus API to get a table of total population by state from the American Community Survey (ACS). To do this, you'll use use the alphanumeric variable for total population, which has the following "label" and "concept": "Estimate!!Total:" and "SEX BY AGE".  
 * Use ggplot to make a horizontal bar chart that shows the top 10 states, with the length of the bar determined by the state's total PPP loans per 100,000 people. Give it an appropriate title, source, and x and y axis titles. 
 * Make the bars on the chart blue! I didn't show you how to do this in the prelab, so do some web sleuthing to figure it out.  
+```{r}
+state_ppp_all <- read.csv("data/state_ppp_all.csv") 
 
+v19 <- load_variables(2019,"acs5", cache = TRUE)
+
+acs_data <- get_acs(geography = "state", variable = "B01001_001")
+
+acs_data <- acs_data %>%
+  select(-GEOID, -moe, -variable) %>%
+  rename(state=NAME)
+
+state_ppp_all <- state_ppp_all %>%
+mutate(state = case_when(
+state == "S Dakota" ~ "South Dakota",
+state == "N Dakota" ~ "North Dakota",
+TRUE ~ state
+)) 
+
+alldata <-acs_data %>%
+inner_join(state_ppp_all)
+
+
+alldata <- alldata %>%
+mutate(percent= (total_ppp_loans/estimate)*100000) %>%
+arrange(desc(percent)) %>%
+head(10)
+ 
+alldata %>%
+    ggplot() +
+  geom_bar(aes(x=reorder(state, total_ppp_loans), weight=percent), fill= "#2f53da") +
+  coord_flip() + 
+  theme_minimal()+
+ labs(
+    title="States With Most PPP Loans per 100,000 People",
+    x = "total loans",
+    y = "state",
+    caption = "source: SBA PPP loan database"
+ )
+```
 **A2.** 
 
 **Q3.**  A scatterplot is a type of chart that helps us see relationships between two variables. One variable goes on the x axis, the other on the y axis.  For each row/observation in our data, a scatterplot puts a circle (or a "point") where the two variables intersect on a grid. 
