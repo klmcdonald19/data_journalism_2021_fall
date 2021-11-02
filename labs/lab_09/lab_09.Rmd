@@ -113,8 +113,8 @@ alldata %>%
   theme_minimal()+
  labs(
     title="States With Most PPP Loans per 100,000 People",
-    x = "total loans",
-    y = "state",
+    x = "state",
+    y = "loans per 100k",
     caption = "source: SBA PPP loan database"
  )
 ```
