@@ -84,6 +84,7 @@ knitr::include_graphics(rep("images/ppp_datawrapper7.png"))
 Some publication systems allow for the embedding of HTML into a post or a story. Some don't. The only way to know is to ask someone at your publication. Every publication system on the planet, though, can publish an image. So there's always a way to export your chart as a PNG file, which you can upload like any photo.
 
 **Answer** Copy the url of the graphic you published here.
+https://datawrapper.dwcdn.net/SEOSB/1/ 
 
 ### Task 8: Make a Choropleth Map
 
@@ -97,7 +98,7 @@ maryland_ppp <- read_rds("data/pre_lab_10.rds")
 
 **Task** First, we'll create a dataframe that has county (jurisdiction) level counts of approved applications. Run the following code to do that. There are some mistakes in the data, so we're going to remove those with a filter after doing the counting.
 **Answer** Describe what the code below is doing and the output.
-
+The code is grouping and summarizing to show the county in one column, and the total amount of approved applications in the column next to it. 
 ```{r}
 md_counties <- maryland_ppp %>%
     group_by(project_county_name) %>%
@@ -106,7 +107,7 @@ md_counties <- maryland_ppp %>%
 
 **Task** Let's deal with those seemingly extraneous records that don't appear to be MD PPP applications:
 **Answer** Describe what the code below is doing and the output.
-
+The code is basically doing the same thing we just did in the previous code block but it is filtering out the counties that are not a part of Maryland. I  believe it went from 32 to 24. 
 ```{r}
 md_counties <- maryland_ppp %>%
     group_by(project_county_name) %>%
@@ -135,7 +136,7 @@ Looks good, but there are two issues: Datawrapper expects a 5-digit FIPS code (t
 
 **Task** Generate full FIPS codes
 **Answer** Describe the contents of the new `fips_code` column
-
+The column with the fips code was added to the data frame. They all start with 240 except for the last one which is Baltimore city.
 ```{r}
 md_fips <- md_fips %>% mutate(fips_code = str_c(state_code, county_code))
 ```
@@ -158,7 +159,7 @@ md_fips <- md_fips %>% mutate(match_county = str_to_upper(county)) %>%
 
 **Task** Now we'll join `md_counties` and `md_fips` together using our new `match_county` column:
 **Answer** Describe here what you see in `md_counties_with_fips`
-
+When you join the data you now have the county name and the fip code as well. 
 ```{r}
 md_counties_with_fips <- md_counties %>%
   left_join(md_fips, by=c('project_county_name'='match_county'))
@@ -193,7 +194,7 @@ You'll see that the map currently is of the whole nation, and we only have Maryl
 
 **Task** Look for "Hide regions without data" under Appearance, and click the slider icon to enable that feature. You should see a map zoomed into Maryland with some counties in various colors.
 **Answer** Describe the changes from the previous map
-
+The map zooms in so you can see the Maryland counties more clearly instead of the entire country. 
 But it's a little rough visually, so let's clean that up.
 
 **Task** Look for the "Show color legend" label and add a caption for the legend, which is the horizontal bar under the title. It represents the extent of the data from smallest number of loans to largest. Then click on the "Annotate" tab to add a title, description, data source and byline. The title should represent the headline, while the description should be a longer phrase that tells people what they are looking at.
@@ -202,8 +203,9 @@ That's better, but check out the tooltip by hovering over a county. It's not sup
 
 **Task** Click the "Customize tooltips" button so it expands down. Change {{ fips }} to {{ county }} and {{ count }} to {{ FORMAT(count, "0,0.[00]")}}
 **Answer** Describe the changes from the previous map
-
+Instead of using the fips code to identify the MD county it says the name of the county when you hover over it. 
 Ok, that looks better. Let's publish!
 
 **Task** Click the "Proceed" button until you get to the "Publish & Embed" tab, then click "Publish Now". Copy the URL and paste it below.
 **Answer** Put the URL of your map here.
+https://datawrapper.dwcdn.net/lgO48/1/ 
