@@ -54,7 +54,7 @@ When you do, it should look something like this:
 ### Task: Load image
 **Task** Run the following code to load an image. Describe what you see in the answer space below.
 **Answer**
-
+A list of documents that include a .shp shapefile as well as a .prj file. 
 ```{r, echo=FALSE}
 knitr::include_graphics(rep("images/geolayers2.png"))
 ```
@@ -64,7 +64,7 @@ Simlar to `readr`, the `sf` library has functions to read geographic data. In th
 ### Task: Load data
 **Task** Run the following code to load data. Describe what you see in the answer space below. What columns exist in this data?
 **Answer**
-
+The columns that exist in this data include things like name, city, address, state, etc. The last column included is called "geometry." 
 ```{r}
 hospitals <- st_read("data/Hospitals/Hospitals.shp")
 
@@ -78,7 +78,7 @@ Let's look at just Maryland hospitals. Good news -- `sf` plays very nicely with 
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+It shows we have 72 hospitals. It has 32 fields which includes things like address, city, websites, fips codes, and geometry. 
 ```{r}
 md_hospitals <- hospitals %>% 
   filter(STATE == "MD")
@@ -93,7 +93,7 @@ What kind of hospitals do we have?
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+The output shows the kinds of hospitals which include general acute care, psychiatric, military, chronic disease, long term care, rehabilitation, and special hospitals. 
 ```{r}
 md_hospitals %>%
   group_by(TYPE) %>%
@@ -108,7 +108,7 @@ Let's narrow our data to only look at the 50 "General Acute Care hospitals."
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We've narrowed the previous output to only include the 50 general acute care hospitals in Maryland. 
 ```{r}
 
 md_hospitals <- hospitals %>% 
@@ -126,7 +126,7 @@ We can simply plot them on a longitude-latitude grid using ggplot.
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We get a series of points, which represent the hospitals, plotted by the latitude and longitude. 
 ```{r}
 md_hospitals %>%
   ggplot() + 
@@ -149,7 +149,7 @@ Then load it:
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We installed the package tigris. 
 ```{r}
 # install.packages('tigris')
 library(tigris)
@@ -160,6 +160,7 @@ Now, let's use the counties() function from tigris to pull down a shapefile of a
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
+We get 3,233 rows and 18 columns of information. It looks normal but does have the geometry column at the bottom. 
 ```{r}
 
 counties <- counties() 
@@ -178,7 +179,7 @@ This county shapefile has all 3233 U.S. counties.  We only want the Maryland cou
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We've stored data in md_counties that filtered out only counties in Maryland from the original data. There are 24 rows. 
 ```{r}
 md_counties <- counties %>%
   filter(STATEFP == "24")
@@ -190,7 +191,7 @@ To see what this looks like, let's plot it out with ggplot. We can pretty clearl
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+The output is a map of the state of Maryland with the counties. It is plotted by latitude and longitude. 
 ```{r}
 md_counties %>%
   ggplot() + 
@@ -207,7 +208,7 @@ We're also going to change things up a bit to put the datasets we want to displa
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+The output is the same map from before with the dots plotted based on the counties they're in. There are also noticeable clusters of dots. 
 ```{r}
 
 ggplot() + 
@@ -226,7 +227,7 @@ We can get a sense of where the largest hospitals are, by changing the color of 
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+There is now different colored dots to show the number of hospital beds. The counties are now white instead of gray. 
 ```{r}
 
 ggplot() + 
@@ -265,7 +266,7 @@ And now let's load the dataframe of hospital information from the previous chapt
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+The output shows that we've filtered out the 50 general acute care hospitals in Maryland. It has read the layer "hospitals" from the data source and theres a bunch of information about name, address, city, state, zip, etc. 
 ```{r}
 md_hospitals <- st_read("data/Hospitals/Hospitals.shp") %>% 
   filter(STATE == "MD") %>%
@@ -282,7 +283,7 @@ Each hospital exists inside of a county, so we're going to first calculate the t
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+The output is that we get the county in Maryland with the total number of hospital beds. 
 ```{r}
 
 md_beds_by_county <- md_hospitals %>%
@@ -303,7 +304,7 @@ Next, we'll go out and get population data for each county from tidycensus.  The
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+The output shows the MD county with a population estimate. 
 ```{r}
 
 md_county_population <- get_acs(geography = "county", 
@@ -319,7 +320,7 @@ Ultimately, we're going to join this county population table with our beds by co
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+The output is that we added a geometry category so that we can make a map. 
 ```{r}
 
 md_county_population <- get_acs(geography = "county", 
@@ -340,7 +341,7 @@ But there's a problem.  The column in our population data that has county names 
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+The data didn't join because of capitalization differences between the columns. 
 ```{r}
 
 md_county_population
@@ -356,7 +357,7 @@ Let's clean the population table. We're going to rename the "NAME" column to "CO
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We cleaned the data so that now we can try join the two data sets together and there are no problems with capitalization. 
 ```{r}
 md_county_population <- md_county_population %>%
   rename(COUNTY = NAME) %>%
@@ -375,7 +376,7 @@ Now we can join them.
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We created md_beds_per_100k which is the two data sets joined together, which was made possible by the cleaning we did. 
 ```{r}
 md_beds_per_100k <- md_county_population %>%
   left_join(md_beds_by_county)
@@ -390,7 +391,7 @@ We have two NAs after we join, for Queen Anne's County and Carolina County.  Tha
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We have now successfully replaced the NAs with values of 0. 
 ```{r}
 md_beds_per_100k <- md_county_population %>%
   left_join(md_beds_by_county) %>%
@@ -405,7 +406,7 @@ Our final step before visualization, let's calculate the number of beds per 100,
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We did some code to calculate the number of beds per 100000 people in each county (line 414) and then arranged it by highest to lowest. 
 ```{r}
 md_beds_per_100k <- md_county_population %>%
   left_join(md_beds_by_county) %>%
@@ -424,7 +425,7 @@ Okay, now let's visualize.  We're going to build a choropleth map, with the colo
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We have a map of the MD counties. They are colored according to the number of hospital beds per 100000 people. 
 ```{r}
 ggplot() + 
   geom_sf(data=md_beds_per_100k, aes(fill=beds_per_100k)) + 
@@ -436,7 +437,7 @@ This map is okay, but the color scale makes it hard to draw fine-grained differe
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below.
 **Answer**
-
+We've changed the color scale so that it is easier to see differences. 
 ```{r}
 ggplot() + 
   geom_sf(data=md_beds_per_100k, aes(fill=beds_per_100k)) + 
@@ -451,7 +452,7 @@ So let's change the color scale to a "log" scale, which will help us see those d
 ### Task: Run code
 **Task** Run the following code. Describe the output in the space below. What patterns do you see?
 **Answer**
-
+We see southern MD has a cluster of the least beds per 100000 people. 
 ```{r}
 ggplot() + 
   geom_sf(data=md_beds_per_100k, aes(fill=beds_per_100k)) + 
