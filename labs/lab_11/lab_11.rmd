@@ -18,9 +18,18 @@ knitr::opts_chunk$set(echo = TRUE)
 **Task** Create a codeblock and load appropriate packages and settings for this lab. You'll need tidyverse, tidycensus, janitor, sf and tigris, and you'll also need to install your census API key.
 
 ## Load data
-
+```{r}
+library(tidyverse)
+library(sf)
+library(janitor)
+library(tigris)
+#census_api_key("cf1cf256ae2dbf70e349a8ed26a87792c4ad7275", install=TRUE)
+```
 **Task** Create a codeblock and load the WV slice of the PPP loan data, which is in the data folder and is called lab_11.rds.
 
+```{r}
+wv_slice_ppp <- read_rds("data/lab_11.rds")
+``` 
 ## Questions 
 
 **Q1.** You are interested in doing some reporting on how West Virginia companies in the "Mining, Quarrying, and Oil and Gas Extraction" industry (https://www.naics.com/six-digit-naics/?code=21) used PPP loans during the pandemic (West Virginia is a big coal mining state).  
@@ -35,7 +44,9 @@ Then answer these questions:
 * Based on the table, what county got the highest total loan amount? What was the total amount per 100K population, the total amount of loans (not population adjusted), how many loans were there, and what's the population?
 
 **A1.** 
+```{r}
 
+``` 
 **Q2.** You want to understand WHY the spatial pattern you saw above exists.  So you grab a shapefile with the latitude and longitude coordinates of every mine permit in West Virginia from the state Department of Environmental Protection. 
 
 Here's the url: https://tagis.dep.wv.gov/arcgis/rest/services/WVDEP_enterprise/mining_reclamation/MapServer/0/query?where=1%3D1&outFields=*&geometry=&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outSR=4326&f=json. 
