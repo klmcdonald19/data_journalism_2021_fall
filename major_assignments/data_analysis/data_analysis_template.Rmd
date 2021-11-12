@@ -1,7 +1,6 @@
 ---
 title: "Data Analysis Project"
-author: "Student names here"
-date: "Date here"
+author: "Kassidy, Maddie, Cassidie"
 output:
   html_document:
     theme: cerulean
@@ -16,10 +15,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction 
-
-
-
 ## Load libraries
 
 Loading required libraries for this analysis.
@@ -33,13 +28,10 @@ library(refinr)
 
 ## Load and Cleaning Data
 
-In this section, describe the source of the data, write a basic data dictionary for data you are working with, and discuss any caveats or issues you discovered working with this data. 
-
 ```{r}
 # Load required data
- fatal_shootings<- read_csv("data/fatal-police-shootings-data.csv")
-# Path to data should be loaded from folder "data" i.e. read_csv("data/name_of_data.csv")
-
+fatal_shootings<- read_csv("data/fatal-police-shootings-data.csv") 
+read_csv
 # Clean required data and prepare for analysis if needed. 
 
 
