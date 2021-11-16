@@ -31,7 +31,6 @@ library(refinr)
 ```{r}
 # Load required data
 fatal_shootings<- read_csv("data/fatal-police-shootings-data.csv") 
-read_csv
 # Clean required data and prepare for analysis if needed. 
 
 
