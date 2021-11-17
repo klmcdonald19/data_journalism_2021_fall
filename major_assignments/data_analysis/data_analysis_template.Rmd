@@ -16,6 +16,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Load libraries
+```{r}
+install.packages("censusxy")
+install.packages("tidycensus")
+```
 
 Loading required libraries for this analysis.
 
@@ -24,6 +28,11 @@ options(scipen=999)
 library(tidyverse)
 library(lubridate)
 library(refinr)
+library(tidycensus)
+```
+
+```{r}
+#census_api_key("cf1cf256ae2dbf70e349a8ed26a87792c4ad7275", install=TRUE)
 ```
 
 ## Load and Cleaning Data
@@ -42,7 +51,9 @@ fatal_shootings<- read_csv("data/fatal-police-shootings-data.csv")
 *Are police shootings happening mostly in majority-black communities, even when the victim is not black?
 
 ```{r}
-
+fatal_shootings <- fatal_shootings %>%
+  fatal_shootings <- cxy_geocode(fatal_shootings, city = city, state = state, latitude = latitude, longitude = longitude, class = "sf", return = "geographies")
+  
 ```
 
 ### Question 2
@@ -60,7 +71,7 @@ fatal_shootings<- read_csv("data/fatal-police-shootings-data.csv")
 ```
 
 ### Question 4
-*How many shootings occurred in neighborhoods where there is a school in the proximity?
+
 
 
 ```{r}
@@ -68,7 +79,7 @@ fatal_shootings<- read_csv("data/fatal-police-shootings-data.csv")
 ```
 
 ### Question 5
-*Based off of #4, in the shootings that happened near the schools, were the victims more likely to be under 18?
+
 
 ```{r}
 
