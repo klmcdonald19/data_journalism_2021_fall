@@ -54,6 +54,33 @@ fatal_shootings<- read_csv("data/fatal-police-shootings-data.csv")
 fatal_shootings <- fatal_shootings %>%
   fatal_shootings <- cxy_geocode(fatal_shootings, city = city, state = state, latitude = latitude, longitude = longitude, class = "sf", return = "geographies")
   
+
+
+fatal_shootings<- fatal_shootings %>% 
+    filter(!is.na(longitude)) 
+shootings <- tibble()
+for (row_number in 1:nrow(shootings)) {
+  
+  row_df<- shootings %>%
+  slice(row_number)
+   longitude <- row_df$longitude
+  latitude <- row_df$latitude
+  census_results <- cxy_geography(longitude, latitude) %>%
+    select(Census.Tracts.GEOID) %>%
+    clean_names()
+ 
+   row_df <- row_df %>%
+     bind_cols(census_results) %>%
+  shootings <- shootings %>%
+    bind_rows(row_df) 
+   
+   print(paste0("finished ", row_number, " ", Sys.time()))
+   
+   if (row_number%%500 == 0) {
+     filepath <- paste0("data/geocoded_results_", row_number, ".rds")
+     write_rds(shootings, filepath)
+    shootings <- as_tibble()
+   }
 ```
 
 ### Question 2
