@@ -24,70 +24,112 @@ install.packages("tidycensus")
 Loading required libraries for this analysis.
 
 ```{r echo=FALSE, message=FALSE}
-options(scipen=999)
 library(tidyverse)
-library(lubridate)
-library(refinr)
 library(tidycensus)
+library(janitor)
+library(lubridate)
+library(sf)
+library(tigris)
+install.packages("usmap")
+library(usmap)
+install.packages("censusxy")
+library(censusxy)
 ```
 
 ```{r}
-#census_api_key("cf1cf256ae2dbf70e349a8ed26a87792c4ad7275", install=TRUE)
+#census_api_key("cf1cf256ae2dbf70e349a8ed26a87792c4ad7275", overwrite=TRUE)
+
+Shootings<-read_csv("data/fatal-police-shootings-data.csv")
 ```
-
-## Load and Cleaning Data
-
-```{r}
-# Load required data
-fatal_shootings<- read_csv("data/fatal-police-shootings-data.csv") 
-# Clean required data and prepare for analysis if needed. 
-
-
-```
-
-
 
 ### Question 1
 *Are police shootings happening mostly in majority-black communities, even when the victim is not black?
-
 ```{r}
-fatal_shootings <- fatal_shootings %>%
-  fatal_shootings <- cxy_geocode(fatal_shootings, city = city, state = state, latitude = latitude, longitude = longitude, class = "sf", return = "geographies")
-  
-
-
-fatal_shootings<- fatal_shootings %>% 
+shootings<-read_csv("data/fatal-police-shootings-data.csv")%>%
     filter(!is.na(longitude)) 
-shootings <- tibble()
+shootings_geocoded <- tibble()
 for (row_number in 1:nrow(shootings)) {
-  
-  row_df<- shootings %>%
-  slice(row_number)
-   longitude <- row_df$longitude
+  #making one row dataframe with shooting data geocoded
+  row_df <- shootings %>%
+    slice(row_number)
+  #extract value for each object latitude and longitude
+  longitude <- row_df$longitude
   latitude <- row_df$latitude
+  #get census tract for row
   census_results <- cxy_geography(longitude, latitude) %>%
     select(Census.Tracts.GEOID) %>%
     clean_names()
- 
+#add census tract to dataframe 
    row_df <- row_df %>%
-     bind_cols(census_results) %>%
-  shootings <- shootings %>%
+     bind_cols(census_results) 
+   
+  shootings_geocoded <- shootings_geocoded %>%
     bind_rows(row_df) 
-   
-   print(paste0("finished ", row_number, " ", Sys.time()))
-   
-   if (row_number%%500 == 0) {
-     filepath <- paste0("data/geocoded_results_", row_number, ".rds")
-     write_rds(shootings, filepath)
-    shootings <- as_tibble()
-   }
+}
+```
+```{r}
+#read in the data
+data1 <- read_rds("data/geocoded_results_500.rds")
+data2 <- read_rds("data/geocoded_results_1000.rds")
+data3 <- read_rds("data/geocoded_results_1500.rds")
+data4 <- read_rds("data/geocoded_results_2000.rds")
+data5 <- read_rds("data/geocoded_results_2500.rds")
+data6 <- read_rds("data/geocoded_results_3000.rds")
+data7 <- read_rds("data/geocoded_results_3500.rds")
+data8 <- read_rds("data/geocoded_results_4000.rds")
+data9 <- read_rds("data/geocoded_results_4500.rds")
+data10 <- read_rds("data/geocoded_results_5000.rds")
+data11 <- read_rds("data/geocoded_results_5500.rds")
+data12 <- read_rds("data/geocoded_results_6000.rds")
+data13 <- read_rds("data/geocoded_results_6150.rds")
+data14 <- read_rds("data/geocoded_results_6240.rds")
+data15 <- read_rds("data/geocoded_results_6290.rds")
+data16 <- read_rds("data/geocoded_results_6300.rds")
+data17 <- read_rds("data/geocoded_results_6310.rds")
+data18 <- read_rds("data/geocoded_results_6320.rds")
+data19 <- read_rds("data/geocoded_results_6330.rds")
+data20 <- read_rds("data/geocoded_results_6340.rds")
+data21 <- read_rds("data/geocoded_results_6350.rds")
+data22 <- read_rds("data/geocoded_results_6360.rds")
+data23 <- read_rds("data/geocoded_results_6370.rds")
+data24 <- read_rds("data/geocoded_results_6380.rds")
+data25 <- read_rds("data/geocoded_results_6390.rds")
+data26 <- read_rds("data/geocoded_results_6400.rds")
+data27 <- read_rds("data/geocoded_results_6410.rds")
+#binding the ones we have into one
+shootings_geoid <- bind_rows(data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, data13,data14, data15,data16, data17, data18, data19, data20, data21, data22, data23, data24, data25, data26, data27,.id = NULL)
+unmatched <- anti_join(Shootings, shootings_geoid, by=c("id"))
+
+states_dataframe <- fips_codes %>%
+  distinct(state) %>%
+  head(51) %>%
+  as_vector()
+
+census <- get_acs(geography = "tract", state= states_dataframe, 
+                       variables = c(popululation = "B02001_001",
+                                median.gross.rent = "B25064_001",
+                                median.household.income = "B19013_001",
+                                rent.burden = "B25071_001",
+                                white = "B03002_003", 
+                                af.am = "B03002_004",
+                                hispanic = "B03002_012",
+                                am.ind = "B03002_005",
+                                asian = "B03002_006",
+                                nh.pi = "B03002_007",
+                                multiple = "B03002_009",
+                                other = "B03002_008"),
+                          year= 2019)
+
+census <- census%>%
+  rename(census_tracts_geoid= GEOID) %>%
+  jointdataset <- merge(census, shootings_geoid, by = 'census_tracts_geoid')
+
+
 ```
 
-### Question 2
-*Do these shootings mostly occur in low income areas? 
-
+###Question 2:
+Do these shootings mostly occur in low income areas?
 ```{r}
-
 ```
 
 ### Question 3
